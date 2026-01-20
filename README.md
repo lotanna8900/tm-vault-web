@@ -1,7 +1,7 @@
 # TM Vault - Web3 Investment Interface
 
 ## Live Demo
-[[Insert Vercel URL](https://tm-vault-web.vercel.app/)]
+[[TM Vault Web](https://tm-vault-web.vercel.app/)]
 
 ## Features Implemented
 - ✅ Privy wallet authentication
