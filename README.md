@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# TM Vault - Web3 Investment Interface
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Live Demo
+[[Insert Vercel URL](https://tm-vault-web.vercel.app/)]
 
-Currently, two official plugins are available:
+## Features Implemented
+- ✅ Privy wallet authentication
+- ✅ Multi-vault selection (Stable/Growth/Turbo)
+- ✅ Two-step Approve → Deposit flow
+- ✅ Real-time balance tracking
+- ✅ Transaction history with event logs
+- ✅ Withdraw functionality
+- ✅ Network validation
+- ✅ Confetti animation on success
+- ✅ Error handling for edge cases
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- **React + Vite** - Fast dev environment
+- **Wagmi + Viem** - Type-safe Ethereum interactions
+- **Privy** - Seamless wallet onboarding
+- **TailwindCSS** - Utility-first styling
 
-## React Compiler
+## Design Decisions
+**Why Web Instead of Mobile:**
+Initially started with React Native + Expo, but encountered SDK compatibility issues with the Web3 stack. Pivoted to web to prioritize delivering a working product over debugging tooling conflicts.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Approve → Deposit Flow:**
+Implemented as two separate buttons with clear visual feedback. The approve button disables after success, and the deposit button only activates post-approval.
 
-## Expanding the ESLint configuration
+**Error Handling:**
+Added user-friendly messages for common failures (rejected tx, insufficient funds, network errors) instead of raw blockchain errors.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Running Locally
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Smart Contract Addresses
+- USDC Token: `0x9Eb7D564a9385AB25bfCe2603fa5ed81B79546B2`
+- Vault: `0xcd2d4c637E606C41714C434436775fB5E7264820`
+- Network: Sepolia Testnet
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Future Improvements
+- Add APY calculation based on real vault performance
+- Implement pull-to-refresh for balances
+- Add transaction confirmation modals
+- Support multiple wallet connectors
