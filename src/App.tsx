@@ -5,10 +5,11 @@ import { parseEther, formatEther, erc20Abi, parseAbiItem } from 'viem';
 import { sepolia } from 'viem/chains';
 import Confetti from 'react-confetti';
 
-// Addresses
+// --- 🔧 ADDRESS CONFIGURATION ---
 const TOKEN_ADDRESS = "0x9Eb7D564a9385AB25bfCe2603fa5ed81B79546B2"; 
 const VAULT_ADDRESS = "0xcd2d4c637E606C41714C434436775fB5E7264820";
 const EXPECTED_CHAIN_ID = sepolia.id;
+// --------------------------------
 
 const VAULT_ABI = [
   { inputs: [{ name: "amount", type: "uint256" }], name: "deposit", outputs: [], stateMutability: "nonpayable", type: "function" },
@@ -65,7 +66,7 @@ export default function App() {
   const { data: withdrawHash, writeContract: writeWithdraw, isPending: isWithdrawingWallet, error: withdrawError } = useWriteContract();
   const { isLoading: isWithdrawingConfirming, isSuccess: isWithdrawn } = useWaitForTransactionReceipt({ hash: withdrawHash });
 
-  // 3. Fetch History
+  // 3. Fetch History Logic
   const fetchHistory = async () => {
     if (!publicClient || !address) return;
     setIsLoadingHistory(true);
@@ -74,7 +75,7 @@ export default function App() {
         address: VAULT_ADDRESS as `0x${string}`,
         event: parseAbiItem('event Deposit(address indexed user, uint256 amount)'),
         args: { user: address as `0x${string}` },
-        fromBlock: 'earliest'
+        fromBlock: 'earliest' 
       });
       const withdrawLogs = await publicClient.getLogs({
         address: VAULT_ADDRESS as `0x${string}`,
@@ -120,7 +121,7 @@ export default function App() {
     if (error) {
       const message = error.message || 'Unknown error';
       if (message.includes('User rejected') || message.includes('user rejected')) {
-        alert('❌ Transaction cancelled');
+        // Silent or toast
       } else if (message.includes('insufficient funds')) {
         alert('❌ Insufficient balance');
       } else {
@@ -144,17 +145,13 @@ export default function App() {
       alert('Please enter a valid amount');
       return;
     }
-    try {
-      writeApprove({ 
-        address: TOKEN_ADDRESS as `0x${string}`, 
-        abi: erc20Abi, 
-        functionName: 'approve', 
-        args: [VAULT_ADDRESS as `0x${string}`, parseEther(amount)] 
-      });
-      vibrate();
-    } catch (error) {
-      console.error('Approve error:', error);
-    }
+    writeApprove({ 
+      address: TOKEN_ADDRESS as `0x${string}`, 
+      abi: erc20Abi, 
+      functionName: 'approve', 
+      args: [VAULT_ADDRESS as `0x${string}`, parseEther(amount)] 
+    });
+    vibrate();
   };
 
   const handleAction = () => {
@@ -169,19 +166,15 @@ export default function App() {
       return;
     }
     
-    try {
-      const fn = activeTab === 'deposit' ? 'deposit' : 'withdraw';
-      const write = activeTab === 'deposit' ? writeDeposit : writeWithdraw;
-      write({ 
-        address: VAULT_ADDRESS as `0x${string}`, 
-        abi: VAULT_ABI, 
-        functionName: fn, 
-        args: [parseEther(amount)] 
-      });
-      vibrate();
-    } catch (error) {
-      console.error('Action error:', error);
-    }
+    const fn = activeTab === 'deposit' ? 'deposit' : 'withdraw';
+    const write = activeTab === 'deposit' ? writeDeposit : writeWithdraw;
+    write({ 
+      address: VAULT_ADDRESS as `0x${string}`, 
+      abi: VAULT_ABI, 
+      functionName: fn, 
+      args: [parseEther(amount)] 
+    });
+    vibrate();
   };
 
   const vibrate = () => {
@@ -238,12 +231,12 @@ export default function App() {
         {authenticated && isWrongNetwork && (
           <div className="bg-red-50 border border-red-200 p-3 rounded-xl mb-4">
             <p className="text-red-800 text-sm font-semibold mb-2">⚠️ Wrong Network</p>
-            <p className="text-red-600 text-xs mb-3">Please switch to Base network</p>
+            <p className="text-red-600 text-xs mb-3">Please switch to Sepolia Testnet</p>
             <button 
               onClick={() => switchChain({ chainId: EXPECTED_CHAIN_ID })}
               className="w-full bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700 transition-colors"
             >
-              Switch to Base
+              Switch to Sepolia
             </button>
           </div>
         )}
@@ -307,6 +300,7 @@ export default function App() {
                   <div className="text-center mt-10">
                     <p className="text-4xl mb-2">📜</p>
                     <p className="text-gray-400 text-sm">No transactions yet</p>
+                    <p className="text-xs text-gray-400 mt-2">(Old transactions prior to contract update do not show)</p>
                   </div>
                 ) : (
                   history.map((tx) => (
@@ -318,7 +312,7 @@ export default function App() {
                         <div>
                           <p className="font-bold text-sm text-gray-800">{tx.type}</p>
                           <a 
-                            href={`https://basescan.org/tx/${tx.hash}`}
+                            href={`https://sepolia.etherscan.io/tx/${tx.hash}`} 
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs text-blue-500 hover:underline"
@@ -439,7 +433,7 @@ export default function App() {
 
       {/* Footer */}
       <p className="text-xs text-gray-400 mt-6 text-center">
-        Powered by Privy • Base Network
+        Powered by Privy • Sepolia Testnet
       </p>
     </div>
   );
